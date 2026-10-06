@@ -236,7 +236,7 @@
     </header>
 
     <div class="title-container">
-        <span id="version-tag">v0.0.3</span>
+        <span id="version-tag">v0.0.4</span>
         <h1>Framer</h1>
         <p class="subtitle">Center and add print safe-margins to letter-sized documents losslessly.</p>
     </div>
@@ -407,7 +407,7 @@
                                 const outName = file.name.replace(/\.png$/i, '') + '-centered.png';
                                 const blobUrl = URL.createObjectURL(blob);
                                 
-                                processedImages.push({ name: outName, blob: blob });
+                                processedImages.push({ name: file.name, blob: blob });
 
                                 // UI Card
                                 const card = document.createElement('div');
