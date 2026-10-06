@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Framer</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
     <!-- Embedded minimal JSZip for offline zero-dependency zip generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
@@ -232,7 +236,7 @@
     </header>
 
     <div class="title-container">
-        <span id="version-tag">v0.0.2</span>
+        <span id="version-tag">v0.0.3</span>
         <h1>Framer</h1>
         <p class="subtitle">Center and add print safe-margins to letter-sized documents losslessly.</p>
     </div>
@@ -261,7 +265,7 @@
 
         <div class="field-group" style="margin-top: 12px; margin-bottom: 0;">
             <label for="file-picker">Upload PNG files (Up to 10):</label>
-            <input type="file" id="file-picker" accept=".png" multiple>
+            <input type="file" id="file-picker" multiple>
         </div>
     </div>
 
@@ -366,10 +370,14 @@
             statusBar.style.display = 'inline-flex';
             statusBar.innerHTML = '<span class="spinner"></span><span>Rendering lossless canvases...</span>';
 
+            let skippedCount = 0;
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const isPng = (file.type && file.type.includes('png')) || /\.png$/i.test(file.name);
-                if (!isPng) continue;
+                if (!isPng) {
+                    skippedCount++;
+                    continue;
+                }
 
                 await new Promise((resolve) => {
                     const reader = new FileReader();
@@ -433,7 +441,11 @@
                 });
             }
 
-            statusBar.innerHTML = `Completed ${processedImages.length} image(s). Ready to download.`;
+            if (processedImages.length === 0) {
+                statusBar.innerHTML = 'No valid PNG files found. Please select PNG documents.';
+            } else {
+                statusBar.innerHTML = `Completed ${processedImages.length} image(s).` + (skippedCount > 0 ? ` (${skippedCount} non-PNG skipped)` : '') + ' Ready to download.';
+            }
         }
 
         // Batch ZIP creation
